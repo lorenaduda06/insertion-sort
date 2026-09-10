@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insertion Sort - Estratégias de Programação</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="deck" id="deck">
+        
+        <section class="slide active">
+            <div class="eyebrow">UTFPR - Estratégias de Programação</div>
+            <div class="cols-2 grid">
+                <div>
+                    <h1><span class="title-mark"></span>Insertion <span class="band">Sort</span></h1>
+                    <p class="muted" style="max-width:760px">Como ordenar inserindo cada elemento na posição correta de uma parte já ordenada.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--bg);">Equipe</h3>
+                    <p>
+                        Giovanna Furlan Fernandes
+                        <br>
+                        Iandê de Freitas Richalski
+                        <br>
+                        João Vitor de Oliveira Pinho
+                        <br>
+                        Lorena Eduarda Barros Martinelli
+                        <br>
+                        Luiz Felipe Fernandes Ramos 
+                    </p>
+                    <p class="muted" style="font-size:16px;margin-top:18px">Professor: Clayton Kossoski</p>
+                </div>
+            </div>
+            <div class="footer"><b></b><span>1 / 12</span></div>
+        </section>
+        
+        <section class="slide">
+            <div class="eyebrow">Agenda</div>
+            <h2>O que vamos ver</h2>
+            <div class="agenda" style="margin-top:22px">
+                <div>Visão geral</div><div>Ideia de funcionamento</div><div>Passo a passo</div><div>Implementação em C++</div><div>Complexidade</div><div>Vantagens e limitações</div><div>Demonstração visual</div><div>Quando usar</div>
+            </div>
+            <div class="footer"><b>Insertion Sort</b><span>2 / 12</span></div>
+        </section>
+        
+        <section class="slide">
+            <div class="eyebrow">Visão geral</div>
+            <h2>O que é o Insertion Sort?</h2>
+            <div class="cols-2 grid">
+                <div>
+                    <p>É um algoritmo de ordenação <strong>incremental</strong>: percorre o vetor da esquerda para a direita e mantém uma região inicial já ordenada.</p>
+                    <p>A cada passo, um novo valor é escolhido como <span class="band"><strong>chave</strong></span> e inserido na posição correta dentro dessa região.</p>
+                </div>
+                <div class="card">
+                    <div class="insertion-visual">
+                        <div class="slot done">2</div><div class="slot done">4</div><div class="slot done">7</div><div class="arrow">←</div><div class="slot current">5</div>
+                    </div>
+                    <p class="muted" style="text-align:center;font-size:17px;margin-top:24px">O 5 precisa ser “inserido” entre 4 e 7.</p>
+                </div>
+            </div>
+            <div class="footer"><b>Conceito</b><span>3 / 12</span></div>
+        </section>
+        
+        <section class="slide">
+            <div class="eyebrow">Funcionamento</div>
+            <h2>A ideia em 4 movimentos</h2>
+            <div class="cols-2 grid">
+                <div class="card">
+                    <div class="big-number">01</div><h3>Escolha a chave</h3><p>Pegue o próximo elemento ainda não processado.</p>
+                    <div class="big-number" style="margin-top:22px">02</div><h3>Compare à esquerda</h3><p>Veja se há valores maiores que a chave.</p>
+                </div>
+                <div class="card">
+                    <div class="big-number">03</div><h3>Desloque os maiores</h3><p>Abra espaço movendo cada valor maior uma posição para a direita.</p>
+                    <div class="big-number" style="margin-top:22px">04</div><h3>Insira</h3><p>Coloque a chave exatamente na lacuna criada.</p>
+                </div>
+            </div>
+            <div class="footer"><b>Mecânica</b><span>4 / 12</span></div>
+        </section>
+        
+        <section class="slide">
+            <div class="eyebrow">Passo a passo</div>
+            <h2>Exemplo: <span class="band">[ 3, 4, 2, 1, 5 ]</span></h2>
+            <div class="grid cols-2">
+                <div class="card">
+                    <p><strong>Início:</strong> considere <span class="green">3</span> como a região ordenada.</p>
+                    <p><strong>4:</strong> já está depois de 3 → <span class="green">[3, 4]</span></p>
+                    <p><strong>2:</strong> desloca 4 e 3 → <span class="green">[2, 3, 4]</span></p>
+                    <p><strong>1:</strong> desloca 4, 3 e 2 → <span class="green">[1, 2, 3, 4]</span></p>
+                    <p><strong>5:</strong> nenhuma mudança → <span class="green">[1, 2, 3, 4, 5]</span></p>
+                </div>
+                <div>
+                    <div class="array"><div class="cell sorted">1</div><div class="cell sorted">2</div><div class="cell sorted">3</div><div class="cell sorted">4</div><div class="cell sorted">5</div></div>
+                    <p class="muted" style="text-align:center">Cada iteração aumenta em 1 o prefixo ordenado.</p>
+                </div>
+            </div>
+            <div class="footer"><b>Exemplo prático</b><span>5 / 12</span></div>
+        </section>
+        
+        <section class="slide">
+            <div class="eyebrow">Implementação</div>
+            
+            <h2>Insertion Sort em C++</h2>
+            
+            <div class="codebox" style="flex: 1;">
+                <pre style="font-size: clamp(12px, 1vw, 16px); line-height: 1.4;">
+                    <code>
+                        <!-- <span class="cm">// insertion sort que ordena o array inteiro de uma vez, ja com todos os numeros</span> -->
+                        <span class="kw">#include</span> &lt;iostream&gt;
+                        <span class="kw">using namespace</span> std;
+                        
+                        <span class="kw">void</span> <span class="fn">insertionSort</span>(<span class="kw">int</span> V[], <span class="kw">int</span> N) {
+                            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt; N; i++) {
+                                <span class="kw">int</span> atual = V[i];  <span class="cm">// valor a inserir</span>
+                                <span class="kw">int</span> j = i;
+                                
+                                <span class="cm">// desloca os maiores para a direita</span>
+                                <span class="kw">while</span> (j &gt; <span class="num">0</span> &amp;&amp; atual &lt; V[j-<span class="num">1</span>]) {
+                                    V[j] = V[j-<span class="num">1</span>];
+                                    j--;
+                                }
+                                
+                                V[j] = atual;  <span class="cm">// insere na posição correta</span>
+                            }
+                        }
+                        
+                        <span class="kw">int</span> <span class="fn">main</span>() {
+                            <span class="kw">int</span> V[] = {<span class="num">12</span>, <span class="num">11</span>, <span class="num">13</span>, <span class="num">5</span>, <span class="num">6</span>};
+                            <span class="kw">int</span> N = <span class="kw">sizeof</span>(V) / <span class="kw">sizeof</span>(V[<span class="num">0</span>]);
+                            
+                            cout &lt;&lt; <span class="str">"Antes: "</span>;
+                            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; N; i++) cout &lt;&lt; V[i] &lt;&lt; <span class="str">" "</span>;
+                            cout &lt;&lt; <span class="str">"\n"</span>;
+                            
+                            <span class="fn">insertionSort</span>(V, N);
+                            
+                            cout &lt;&lt; <span class="str">"Depois: "</span>;
+                            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; N; i++) cout &lt;&lt; V[i] &lt;&lt; <span class="str">" "</span>;
+                            cout &lt;&lt; <span class="str">"\n"</span>;
+                            
+                            <span class="kw">return</span> <span class="num">0</span>;
+                        }
+                    </code>
+                </pre>
+            </div>
+            
+            <div class="footer">
+                <b>Implementação</b>
+                <span>6 / 12</span>
+            </div>
+        </section>
+        
+        <section class="slide">
+            <div class="eyebrow">Análise</div>
+            <h2>Complexidade e desempenho</h2>
+            <div class="complexity">
+                <div class="metric"><div class="label">Melhor caso</div><div class="value green">O(n)</div><p class="muted" style="font-size:16px">Vetor já ordenado.</p></div>
+                <div class="metric"><div class="label">Caso médio</div><div class="value band">O(n²)</div><p class="muted" style="font-size:16px">Ordem parcialmente aleatória.</p></div>
+                <div class="metric"><div class="label">Pior caso</div><div class="value" style="color:var(--danger)">O(n²)</div><p class="muted" style="font-size:16px">Vetor em ordem inversa.</p></div>
+            </div>
+            <div class="grid cols-3" style="margin-top:24px">
+                <div class="card"><h3>Memória</h3><p><strong>O(1)</strong> extra</p></div>
+                <div class="card"><h3>Estabilidade</h3><p><strong>Sim</strong>, na implementação clássica.</p></div>
+                <div class="card"><h3>Adaptativo</h3><p>Quanto mais ordenados os dados, menos deslocamentos.</p></div>
+            </div>
+            <div class="footer"><b>Complexidade</b><span>7 / 12</span></div>
+        </section>
+        
+        <section class="slide">
+            <div class="eyebrow">Comparação</div>
+            <h2>Onde ele se encaixa?</h2>
+            <table>
+                <thead><tr><th>Algoritmo</th><th>Melhor</th><th>Médio / pior</th><th>Estável?</th><th>Bom para poucos elementos?</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Insertion Sort</strong></td><td class="green">O(n)</td><td>O(n²)</td><td>Sim</td><td class="green">Muito</td></tr>
+                    <tr><td>Selection Sort</td><td>O(n²)</td><td>O(n²)</td><td>Não</td><td>Sim</td></tr>
+                    <tr><td>Merge Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>Sim</td><td>Geralmente não</td></tr>
+                    <tr><td>Quick Sort</td><td>O(n log n)</td><td>O(n²) pior caso</td><td>Não</td><td>Depende</td></tr>
+                </tbody>
+            </table>
+            <div class="card" style="margin-top:24px;padding:18px 22px"><p style="font-size:19px;margin:0"><strong>Ponto-chave:</strong> Insertion Sort perde em grandes entradas aleatórias, mas é excelente em <span class="band">vetores pequenos ou quase ordenados</span>.</p></div>
+            <div class="footer"><b>Comparação</b><span>8 / 12</span></div>
+        </section>
+        
+        <!-- ========================================================= -->
+        <!-- SLIDE 11 - DEMONSTRAÇÃO -->
+        <!-- ========================================================= -->
+        
+        <section class="slide sort-demo-slide">
+            
+            <div class="eyebrow">
+                Demonstração
+            </div>
+            
+            <h2>
+                Veja o <span class="band">Insertion Sort</span> acontecendo
+            </h2>
+            
+            <div class="sort-demo-layout">
+                
+                <div class="sort-demo-card">
+                    
+                    <div class="sort-container" id="sort-container"></div>
+                    
+                    <div class="sort-status" id="sort-status">
+                        Clique em “Novo vetor” para gerar os valores
+                        ou em “Ordenar” para iniciar.
+                    </div>
+                    
+                    <div class="sort-legend">
+                        
+                        <span>
+                            <i class="sort-dot sort-dot-sorted"></i>
+                            Ordenado
+                        </span>
+                        
+                        <span>
+                            <i class="sort-dot sort-dot-key"></i>
+                            Chave
+                        </span>
+                        
+                        <span>
+                            <i class="sort-dot sort-dot-comparing"></i>
+                            Comparação
+                        </span>
+                        
+                        <span>
+                            <i class="sort-dot sort-dot-shifting"></i>
+                            Deslocamento
+                        </span>
+                        
+                        <span>
+                            <i class="sort-dot sort-dot-inserted"></i>
+                            Inserção
+                        </span>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="sort-sidebar">
+                    
+                    <div class="card">
+                        
+                        <h3>Controles</h3>
+                        
+                        <div class="sort-control-field">
+                            
+                            <div class="sort-control-header">
+                                <label for="sort-size">
+                                    Quantidade de colunas
+                                </label>
+                            </div>
+                            
+                            <input
+                            type="number"
+                            id="sort-size"
+                            value="10"
+                            min="2"
+                            step="1"
+                            placeholder="Quantidade"
+                            />
+                            
+                        </div>
+                        
+                        <div class="sort-control-field">
+                            
+                            <div class="sort-control-header">
+                                <label for="sort-speed">
+                                    Velocidade
+                                </label>
+                                
+                                <strong id="sort-speed-label">
+                                    1.0x
+                                </strong>
+                            </div>
+                            
+                            <input
+                            type="range"
+                            id="sort-speed"
+                            value="1"
+                            min="0.5"
+                            max="100"
+                            step="0.5"
+                            />
+                            
+                        </div>
+                        
+                        <div class="sort-controls">
+                            
+                            <button
+                            id="sort-start-button"
+                            onclick="createSortColumns()"
+                            >
+                            Novo vetor
+                        </button>
+                        
+                        <button
+                        id="sort-button"
+                        onclick="runInsertionSort()"
+                        >
+                        Ordenar
+                    </button>
+                    
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                
+                <h3>O que observar</h3>
+                
+                <ul class="sort-observe-list">
+                    <li>A chave é retirada da posição atual.</li>
+                    <li>Ela é comparada com os valores à esquerda.</li>
+                    <li>Valores maiores são deslocados para a direita.</li>
+                    <li>A chave é inserida na posição livre.</li>
+                </ul>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <div class="footer">
+        <b>Animação interativa</b>
+        <span>09 / 12</span>
+    </div>
+</section>
+<section class="slide">
+    <div class="eyebrow">Além do funcionamento básico</div>
+    <h2>Curiosidades sobre o Insertion Sort</h2>
+    <div class="curiosidades-grid">
+        <div class="card curiosidade-card">
+            <div class="curiosidade-header">
+                <span class="curiosidade-num">01</span>
+                <h3 class="curiosidade-title">Excelente para dados quase ordenados</h3>
+            </div>
+            <p class="curiosidade-body">Tende a ser muito eficiente quando a sequência já está parcialmente ordenada, pois realiza apenas os deslocamentos necessários.</p>
+            <div class="curiosidade-highlight">
+                <span class="band">★</span> <span><strong>“Quanto menos inversões, menos trabalho.”</strong></span>
+            </div>
+        </div>
+        
+        <div class="card curiosidade-card">
+            <div class="curiosidade-header">
+                <span class="curiosidade-num">02</span>
+                <h3 class="curiosidade-title">Algoritmo estável</h3>
+            </div>
+            <p class="curiosidade-body">Quando dois elementos possuem o mesmo valor ou chave de ordenação, sua ordem relativa é preservada.</p>
+            <div class="curiosidade-highlight">
+                <span>Antes: Brenda (8), Dylan (5), Andrea (8)<br>Depois: Dylan (5), <strong>Brenda (8)</strong>, <strong>Andrea (8)</strong></span>
+            </div>
+        </div>
+        
+        <div class="card curiosidade-card">
+            <div class="curiosidade-header">
+                <span class="curiosidade-num">03</span>
+                <h3 class="curiosidade-title">É in-place</h3>
+            </div>
+            <p class="curiosidade-body">O algoritmo ordena o próprio vetor e utiliza apenas uma quantidade constante de memória auxiliar.</p>
+            <div class="curiosidade-highlight">
+                <span>Memória auxiliar: <strong class="green">O(1)</strong></span>
+            </div>
+        </div>
+        
+        <div class="card curiosidade-card">
+            <div class="curiosidade-header">
+                <span class="curiosidade-num">04</span>
+                <h3 class="curiosidade-title">Dados chegando aos poucos</h3>
+            </div>
+            <p class="curiosidade-body">É possível manter uma sequência ordenada enquanto novos elementos são recebidos.</p>
+            <div class="curiosidade-highlight">
+                <span>Recebe 7 → <span class="green">[7]</span> &nbsp;·&nbsp; 3 → <span class="green">[3, 7]</span> &nbsp;·&nbsp; 5 → <span class="green">[3, 5, 7]</span></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card curiosidade-extra">
+        <span class="pill" style="margin:0;font-weight:800;color:var(--band);border-color:rgba(246,201,69,0.35);background:rgba(246,201,69,0.1);white-space:nowrap;">Mais uma curiosidade</span>
+        <p style="margin:0;font-size:15px;line-height:1.4;">Existe também o <strong>Binary Insertion Sort</strong>, que usa busca binária para localizar a posição de inserção. Ele reduz o número de comparações, mas os deslocamentos dos elementos continuam sendo necessários.</p>
+    </div>
+    <div class="footer"><b>Curiosidades</b><span>10 / 12</span></div>
+</section>
+
+<section class="slide">
+    <div class="eyebrow">Conclusão</div>
+    <h2>Quando usar Insertion Sort?</h2>
+    <div class="cols-2 grid">
+        <div class="card">
+            <h3 class="green">Faz sentido quando…</h3>
+            <ul><li>o conjunto é pequeno;</li><li>os dados já estão quase ordenados;</li><li>queremos implementação curta e previsível;</li><li>memória extra deve ser mínima.</li></ul>
+        </div>
+        <div class="card">
+            <h3 style="color:var(--danger)">Evite quando…</h3>
+            <ul><li>o volume é grande;</li><li>os dados estão muito desordenados;</li><li>tempo de execução assintótico é prioridade.</li></ul>
+        </div>
+    </div>
+    <p class="quote" style="margin-top:28px">“Simples não significa inútil: <span class="band">no cenário certo</span>, o Insertion Sort é exatamente a ferramenta adequada.”</p>
+    <div class="footer"><b>Conclusão</b><span>11 / 12</span></div>
+</section>
+
+<section class="slide">
+    <div class="eyebrow">Referências</div>
+    <h2>Fontes</h2>
+    <ul class="sources">
+        <li>BACKES, André Ricardo. Algoritmos e Estruturas de Dados em Linguagem C. 1. ed. Rio de Janeiro: LTC, 2023. 512 p. ISBN: 9788521638308</li>
+        <li>BACKES, André Ricardo. Programação Descomplicada. YouTube. Disponível em: https://www.youtube.com. Acesso em: 9 set. 2026.</li>
+        <li>Material da disciplina <strong>Estratégias de Programação - UTFPR</strong>, Atividade Avaliativa 1, 2026-02.</li>
+    </ul>
+    <div class="card" style="margin-top:28px"><p style="margin:0"><strong>Obrigado!</strong> Perguntas sobre funcionamento, implementação, complexidade ou aplicações?</p></div>
+    <div class="footer"><b>Fim</b><span>12 / 12</span></div>
+</section>
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 12</div>
+<div class="keys"><kbd class="key">←</kbd> <kbd class="key">Space</kbd> <kbd class="key">→</kbd> navegar · <kbd class="key">F</kbd> tela cheia</div>
+<script src="script.js"></script>
+</body>
+</html>
