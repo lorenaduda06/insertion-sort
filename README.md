@@ -87,3 +87,11 @@ g++ insertion_sort.cpp -o insertion_sort
 E então:
 
 ./insertion_sort
+
+## Integrantes da equipe
+Giovanna Furlan Fernandes<br>
+Iandê de Freitas Richalski<br>
+João Vitor de Oliveira Pinho<br>
+Lorena Eduarda Barros Martinelli<br>
+Luiz Felipe Fernandes Ramos 
+ 
